@@ -75,7 +75,7 @@ namespace Series
 
             foreach(var serie in lista)
             {
-                Console.WriteLine("#ID {0}: - {1}", serie.retornaId(), serie.retornaTitulo());
+                Console.WriteLine("#ID {0}: - {1} {2}", serie.retornaId(), serie.retornaTitulo(), serie.retornaExcluido() ? " - Excluída" : "");
             }
         }
 
@@ -109,9 +109,13 @@ namespace Series
             repositorio.Insere(novaSerie);
         }
     
-        private static void AtualizarSerie(){
+        private static void AtualizarSerie()
+        {
             Console.Write("Digite o id da série: ");
             int indiceSerie = int.Parse(Console.ReadLine());
+
+            // Valida o range do id recebido
+            if(!validaAcesso(indiceSerie)){ return; }
 
             foreach(int i in Enum.GetValues(typeof(Genero)))
             {
@@ -139,23 +143,45 @@ namespace Series
             repositorio.Atualiza(indiceSerie, serieAtualizada);
         }
     
-        private static void ExcluirSerie(){
+        private static void ExcluirSerie()
+        {
             Console.WriteLine("Digite o id da série: ");
             int indiceSerie = int.Parse(Console.ReadLine());
+
+            if(!validaAcesso(indiceSerie)){ return; }
 
             Serie serie = repositorio.RetornaPorId(indiceSerie);
 
             serie.Exclui();
         }
 
-        private static void VisualizarSerie(){
+        private static void VisualizarSerie()
+        {
             Console.WriteLine("Digite o id da série: ");
             int indiceSerie = int.Parse(Console.ReadLine());
+
+            if(!validaAcesso(indiceSerie)){ return; }
 
             Serie serie = repositorio.RetornaPorId(indiceSerie);
 
             Console.WriteLine(serie.ToString());
         }
        
+        private static bool validaAcesso(int id)
+        {
+            /*
+
+             Verifica se o ID é válido.
+             Para um id ser válido, ele deve estar contido entre 0 (incluso) e o proximoId (não incluso)
+
+            */
+
+            if( 0 <= id && id < repositorio.proximoId() )
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }
