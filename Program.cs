@@ -11,28 +11,35 @@ namespace Series
 
             while(opcaoUsuario != "X")
             {
-                switch(opcaoUsuario)
+                try
                 {
-                    case "1":
-                        ListarSeries();
-                        break;
-                    case "2":
-                        InserirSerie();
-                        break;
-                    case "3":
-                        AtualizarSerie();
-                        break;
-                    case "4":
-                        ExcluirSerie();
-                        break;
-                    case "5":
-                        VisualizarSerie();
-                        break;
-                    case "C":
-                        Console.Clear();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch(opcaoUsuario)
+                    {
+                        case "1":
+                            ListarSeries();
+                            break;
+                        case "2":
+                            InserirSerie();
+                            break;
+                        case "3":
+                            AtualizarSerie();
+                            break;
+                        case "4":
+                            ExcluirSerie();
+                            break;
+                        case "5":
+                            VisualizarSerie();
+                            break;
+                        case "C":
+                            Console.Clear();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException("Parâmetro Inválido.");    
+                    }
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Console.WriteLine("\nEntrada Inválida\n");
                 }
 
                 Console.WriteLine();
@@ -115,7 +122,7 @@ namespace Series
             int indiceSerie = int.Parse(Console.ReadLine());
 
             // Valida o range do id recebido
-            if(!validaAcesso(indiceSerie)){ return; }
+            validaAcesso(indiceSerie);
 
             foreach(int i in Enum.GetValues(typeof(Genero)))
             {
@@ -148,7 +155,7 @@ namespace Series
             Console.WriteLine("Digite o id da série: ");
             int indiceSerie = int.Parse(Console.ReadLine());
 
-            if(!validaAcesso(indiceSerie)){ return; }
+            validaAcesso(indiceSerie);
 
             Serie serie = repositorio.RetornaPorId(indiceSerie);
 
@@ -160,14 +167,14 @@ namespace Series
             Console.WriteLine("Digite o id da série: ");
             int indiceSerie = int.Parse(Console.ReadLine());
 
-            if(!validaAcesso(indiceSerie)){ return; }
+            validaAcesso(indiceSerie);
 
             Serie serie = repositorio.RetornaPorId(indiceSerie);
 
             Console.WriteLine(serie.ToString());
         }
        
-        private static bool validaAcesso(int id)
+        private static void validaAcesso(int id)
         {
             /*
 
@@ -178,10 +185,10 @@ namespace Series
 
             if( 0 <= id && id < repositorio.proximoId() )
             {
-                return true;
+                return;
             }
 
-            return false;
+            throw new ArgumentOutOfRangeException();
         }
     }
 }
